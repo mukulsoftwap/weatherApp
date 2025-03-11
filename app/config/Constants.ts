@@ -12,7 +12,7 @@ export const Colors = {
     background: '#fff',
     tint: tintColorLight,
     icon: '#687076',
-    tabIconDefault: '#687076',
+    secondryBg: '#187fd7',
     tabIconSelected: tintColorLight,
   },
   dark: {
@@ -20,7 +20,10 @@ export const Colors = {
     background: '#151718',
     tint: tintColorDark,
     icon: '#9BA1A6',
-    tabIconDefault: '#9BA1A6',
+    secondryBg: '#d38e31',
     tabIconSelected: tintColorDark,
   },
 };
+
+export const BASE_URL = 'https://api.openweathermap.org/data/2.5/weather';
+export const API_KEY = 'e5d645d9ffedbe2b4d6140edbac20fde';
