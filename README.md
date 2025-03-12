@@ -1,50 +1,78 @@
-# Welcome to your Expo app 👋
+# 🌦️ React Native Weather App
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+## 📌 Overview
+This is a **React Native Weather App** built using **Expo**, providing real-time weather updates via the **OpenWeatherMap API**. Users can:
+- Search for weather by **city name**.
+- Get **weather updates based on location**.
+- Device Specific **light and dark mode** (it will switch as per your device mode).
 
-## Get started
+---
 
-1. Install dependencies
+## 🚀 How to Run the App
+### **🔹 Prerequisites**
+Ensure you have the following installed:
+- **Node.js** (v16 or higher)
+- **Expo CLI**
+- **Android Emulator/iOS Simulator** (or a physical device with Expo Go)
 
-   ```bash
-   npm install
-   ```
+### **🔹 Installation Steps**
+```sh
+# 1️⃣ Clone the repository
+git clone https://github.com/mukulsoftwap/weatherApp.git
+cd weatherApp
 
-2. Start the app
+# 2️⃣ Install dependencies
+npm install  # or yarn install
 
-   ```bash
-    npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
+# 3️⃣ Start the Expo development server
+npm start  # or expo start
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+### **🔹 Running on a Device**
+- **Android:** Scan the QR code in Expo Go.
+- **iOS:**  Scan the QR code in Expo Go.
+- **Simulator:** Press **`a`** (Android) or **`i`** (iOS) in the Expo terminal.
 
-## Learn more
+---
 
-To learn more about developing your project with Expo, look at the following resources:
+## 🏗️ Architectural Decisions
+### **1️⃣ State Management: Context API**
+We use **React Context API** for state management, ensuring a clean and maintainable architecture.
+- `WeatherContext.ts`: Provides weather data and API calls.
+- `WeatherContextProvider.tsx`: Manages state and API interactions.
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+### **2️⃣ API Integration: OpenWeatherMap**
+- `apiService.ts` to get real-time weather data.
+- I Store `API_KEY` in constants currently, it should not store in code but for now its a demo app so i sotre in code, it should be store in `.env` or using Secret Manager.
 
-## Join the community
+### **3️⃣ UI Components & Theming**
+- Custom `ThemedText` and `ThemedView` for dynamic light/dark mode support.
 
-Join our community of developers creating universal apps.
+### **4️⃣ Location Services: Expo-Location**
+- Requests user permission to fetch the current location.
+- Handles errors gracefully (e.g., when location services are denied).
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+### **5️⃣ Testing: Jest & React Native Testing Library**
+- Unit tests for `WeatherCard`, `HomeScreen`, and `WeatherContextProvider`.
+- Mocks API calls and location permissions.
+
+---
+
+## 📂 Project Structure
+```
+/weatherApp
+│── /app
+│   ├── /__test__    # Testing UI components
+│   ├── /components  # Reusable UI components
+|   ├── /config      # Config like. constants
+|   ├── /hooks       # Reusable Hooks
+│   ├── /context     # Context API
+│   ├── /screens     # App screens (HomeScreen)
+│   ├── /services    # API requests (fetchWeatherData)
+|   ├── /providers   # Context API Providers
+│   ├── _layout.tsx  # Main app entry point
+│── package.json     # Dependencies & scripts
+│── README.md        # Documentation
+```
+
+---
