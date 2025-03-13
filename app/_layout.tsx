@@ -7,13 +7,16 @@ import 'react-native-reanimated';
 import { WeatherContextProvider } from '../app/providers/WeatherContextProvider';
 import HomeScreen from '../app/screens/HomeScreen';
 
-import { useColorScheme } from '../app/hooks/useColorScheme';
+import { getTheme } from './services/preferenceService';
+import { ThemeContextProvider, useTheme } from './providers/ThemeContextProvider';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
+
+  // const { theme } = useTheme();
+
   const [loaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
   });
@@ -21,19 +24,27 @@ export default function RootLayout() {
   useEffect(() => {
     if (loaded) {
       SplashScreen.hideAsync();
+      initTheme();
     }
   }, [loaded]);
+
+  const initTheme = async ()=>{
+    const currentTheme = await getTheme();
+    if(!currentTheme){
+      
+    }
+  }
 
   if (!loaded) {
     return null;
   }
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+    <ThemeContextProvider>
       <WeatherContextProvider>
         <HomeScreen />
       </WeatherContextProvider>
       <StatusBar style="auto" />
-    </ThemeProvider>
+    </ThemeContextProvider>
   );
 }

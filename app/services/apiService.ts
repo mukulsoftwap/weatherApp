@@ -15,7 +15,6 @@ async function fetchDataFromApi(url:string) {
   try {
     const response = await fetch(url);
     if (!response.ok) {
-      console.log(response);
       throw new Error('Unable to fetch weather for location');
     }
     const data = await response.json();

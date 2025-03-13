@@ -4,14 +4,14 @@
 This is a **React Native Weather App** built using **Expo**, providing real-time weather updates via the **OpenWeatherMap API**. Users can:
 - Search for weather by **city name**.
 - Get **weather updates based on location**.
-- Device Specific **light and dark mode** (it will switch as per your device mode).
+- Toggle between **light and dark mode**.
 
 ---
 
 ## 🚀 How to Run the App
 ### **🔹 Prerequisites**
 Ensure you have the following installed:
-- **Node.js** (v16 or higher)
+- **Node.js** (v18 or higher)
 - **Expo CLI**
 - **Android Emulator/iOS Simulator** (or a physical device with Expo Go)
 
@@ -30,23 +30,26 @@ npm start  # or expo start
 
 ### **🔹 Running on a Device**
 - **Android:** Scan the QR code in Expo Go.
-- **iOS:**  Scan the QR code in Expo Go.
+- **iOS:** Scan the QR code in Expo Go.
 - **Simulator:** Press **`a`** (Android) or **`i`** (iOS) in the Expo terminal.
 
 ---
 
 ## 🏗️ Architectural Decisions
-### **1️⃣ State Management: Context API**
-We use **React Context API** for state management, ensuring a clean and maintainable architecture.
-- `WeatherContext.ts`: Provides weather data and API calls.
-- `WeatherContextProvider.tsx`: Manages state and API interactions.
+### **1️⃣ State Management: Context API with Reducer (Redux-like Architecture)**
+We use **React Context API with `useReducer`** to manage state efficiently, ensuring a clean and maintainable architecture.
+- `WeatherContextProvider.tsx`: Manages state using `useReducer`.
+- `weatherReducer.ts`: Handles state updates based on dispatched actions.
+- `weatherActions.ts`: Contains functions that handle API calls and dispatch actions.
 
 ### **2️⃣ API Integration: OpenWeatherMap**
-- `apiService.ts` to get real-time weather data.
-- I Store `API_KEY` in constants currently, it should not store in code but for now its a demo app so i sotre in code, it should be store in `.env` or using Secret Manager.
+- `weatherService.ts` fetches real-time weather data.
+-  I Store `API_KEY` in constants currently, it should not store in code but for now its a demo app so i sotre in code, it should be store in `.env` or using Secret Manager.
 
 ### **3️⃣ UI Components & Theming**
-- Custom `ThemedText` and `ThemedView` for dynamic light/dark mode support.
+- `ThemedText` and `ThemedView` enable dynamic **light/dark mode** support.
+- Theme toggling with `ThemeContextProvider.tsx` and `ThemeToggler.tsx`.
+- Theme persistence using `AsyncStorage`.
 
 ### **4️⃣ Location Services: Expo-Location**
 - Requests user permission to fetch the current location.
@@ -61,18 +64,19 @@ We use **React Context API** for state management, ensuring a clean and maintain
 ## 📂 Project Structure
 ```
 /weatherApp
-│── /app
-│   ├── /__test__    # Testing UI components
-│   ├── /components  # Reusable UI components
-|   ├── /config      # Config like. constants
-|   ├── /hooks       # Reusable Hooks
-│   ├── /context     # Context API
-│   ├── /screens     # App screens (HomeScreen)
-│   ├── /services    # API requests (fetchWeatherData)
-|   ├── /providers   # Context API Providers
-│   ├── _layout.tsx  # Main app entry point
-│── package.json     # Dependencies & scripts
-│── README.md        # Documentation
+│── /src
+│   ├── /__tests__    # Testing UI components
+│   ├── /components   # Reusable UI components
+│   ├── /config       # Configuration files (constants, environment variables)
+│   ├── /hooks        # Custom hooks for reuse
+│   ├── /screens      # App screens (HomeScreen)
+│   ├── /services     # API requests (weatherService.ts)
+│   ├── /reducers     # Reducers for managing state (weatherReducer.ts)
+│   ├── /actions      # Actions handling API calls (weatherActions.ts)
+│   ├── /providers    # Context API Providers (WeatherContextProvider.tsx, ThemeContextProvider.tsx)
+│   ├── _layout.tsx       # Main app entry point
+│── package.json      # Dependencies & scripts
+│── README.md         # Documentation
 ```
 
----
+

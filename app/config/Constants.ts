@@ -6,7 +6,7 @@
 const tintColorLight = '#0a7ea4';
 const tintColorDark = '#fff';
 
-export const Colors = {
+export const Colors:any = {
   light: {
     text: '#11181C',
     background: '#fff',
@@ -27,3 +27,5 @@ export const Colors = {
 
 export const BASE_URL = 'https://api.openweathermap.org/data/2.5/weather';
 export const API_KEY = 'e5d645d9ffedbe2b4d6140edbac20fde';
+export const THEME_LIGHT = "light";
+export const THEME_DARK = "dark"

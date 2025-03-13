@@ -1,42 +1,60 @@
 import React, { useEffect, useState } from 'react';
 import * as Location from 'expo-location';
-import { View, TextInput, ActivityIndicator, StyleSheet, TouchableOpacity, Alert, Image} from 'react-native';
-import { useWeather } from '../context/WeatherContext';
+import { View, TextInput, ActivityIndicator, StyleSheet, TouchableOpacity, Alert, Image } from 'react-native';
+import { useWeather } from '../providers/WeatherContextProvider';
 import WeatherCard from '../components/WeatherCard';
 import { ThemedText } from '../components/ThemedText';
 import { ThemedView } from '../components/ThemedView';
+import { loadLastSearchedCity } from '../services/preferenceService';
+import ThemeToggler from '../components/ThemeToggler';
+import { useTheme } from '../providers/ThemeContextProvider';
 import { useThemeColor } from '../hooks/useThemeColor';
+
 
 const noSelect = require('../../assets/images/noSelect.png');
 
 const HomeScreen: React.FC = () => {
-    const { fetchWeather, fetchWeatherByLatLong, weaterInfo, loading, error } = useWeather();
-    const [city, setCity] = useState<string>('');
-    const [loader, setLoader] = useState<boolean>(true);
-    const secondryBg = useThemeColor({ light: undefined, dark: undefined }, 'secondryBg');
+    const { state, fetchWeather, fetchWeatherByLatLong } = useWeather();
+    const [ city, setCity] = useState<string>('');
+    const [ locationLoad, setLocationLoad ] = useState<boolean>(true);
+
+    const { theme } = useTheme();
+
+    const secondryBg = useThemeColor('secondryBg');
 
     const onSearchButtonClicked = ()=>{
-        fetchWeather(city.trim())
+        fetchWeather(city.trim());
     }
 
-    useEffect(() => {
-        requestForLocation();
+    useEffect( () => {
+        initApp();
     }, []);
 
+    const initApp = async ()=>{
+        const searchedCity = await loadLastSearchedCity();
+        if(searchedCity){
+            setCity(searchedCity);
+            setLocationLoad(false);
+        }else{
+            requestForLocation();
+        }
+    }
+
     const requestForLocation = async () => {
-        setLoader(true);
         try {
           let { status } = await Location.requestForegroundPermissionsAsync();
           if (status !== 'granted') {
+            console.log('Triggering Alert for Permission Denied'); //
             Alert.alert('Permission Denied', 'You can still search for weather');
-            setLoader(true);
+            setLocationLoad(false);
             return;
           }
           let location = await Location.getCurrentPositionAsync({});
-          fetchWeatherByLatLong(location.coords.latitude, location.coords.longitude);
-          setLoader(false);
+          await fetchWeatherByLatLong(location.coords.latitude, location.coords.longitude);
+          setLocationLoad(false);
         } catch (error) {
-          setLoader(false);
+            console.log('Triggering Alert for Location Error'); 
+          setLocationLoad(false);
           Alert.alert('Error', 'Unable to get location But you can still search by City');
         }
     };
@@ -56,20 +74,23 @@ const HomeScreen: React.FC = () => {
                 </TouchableOpacity>
             </View>
         
-            
-            {loader || loading?
-                <ActivityIndicator size="large" color="#d38e31" style={styles.loader}/> :
+            {(state.loading || locationLoad)  ? (
+                <ActivityIndicator size="large" color="#d38e31" style={styles.loader} />
+            ) : (state.weatherInfo && !state.error) ? (
+                <WeatherCard weather={state.weatherInfo} />
+            ) : state.error ?  <ThemedText style={styles.error} type="default">{state.error}</ThemedText> : (
                 <>
-                    {error && <ThemedText style={styles.error}>{error}</ThemedText>}
-                    {weaterInfo && !error && <WeatherCard weather={weaterInfo} />}
-                    {!weaterInfo && !error &&
-                        <>
-                            <Image source={noSelect} style={styles.noSelect}/>
-                            <ThemedText style={styles.error} type='subtitle'>Location is not ON but you can search by City.</ThemedText>
-                        </>
-                    }
+                    <Image source={noSelect} style={styles.noSelect} />
+                    <ThemedText style={styles.error} type="subtitle">
+                        Location is not ON but you can search by City.
+                    </ThemedText>
                 </>
-            }
+            )}
+
+            <ThemedView style={styles.themeContainer} borderAllow={true}>
+                <ThemedText type="subtitle">Theme : {theme}</ThemedText>
+                <ThemeToggler />
+            </ThemedView>
             
         </ThemedView>
     );
@@ -82,6 +103,7 @@ const styles = StyleSheet.create({
         paddingLeft:20, 
         paddingRight:20, 
         alignItems: 'center',
+        justifyContent:'space-between'
     },
     loader:{
         alignContent:'center',
@@ -119,6 +141,17 @@ const styles = StyleSheet.create({
         marginTop: 10,
         textAlign: 'center'
     },
+    themeContainer:{
+        width:'100%',
+        flexDirection: 'row',
+        paddingLeft:20,
+        paddingRight:30,
+        paddingTop:10,
+        paddingBottom:10,
+        justifyContent:'space-between',
+        borderRadius: 30,
+        marginBottom:10
+    }
 });
 
 export default HomeScreen;

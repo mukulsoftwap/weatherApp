@@ -1,7 +1,7 @@
 import { ThemedText } from '@/app/components/ThemedText';
 import { ThemedView } from '@/app/components/ThemedView';
 import React from 'react';
-import { View, Text, Image, StyleSheet, useColorScheme } from 'react-native';
+import { Image, StyleSheet } from 'react-native';
 import { useThemeColor } from '../hooks/useThemeColor';
 
 interface WeatherProps {
@@ -15,7 +15,7 @@ interface WeatherProps {
 
 const WeatherCard: React.FC<WeatherProps> = ({ weather }) => {
   
-  const secondryBg = useThemeColor({ light: undefined, dark: undefined }, 'secondryBg');
+  const secondryBg = useThemeColor('secondryBg');
 
   const getImgSource = (source:any)=>{
     return typeof source == 'string'  ? {uri : source} : source;
@@ -39,7 +39,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderWidth: 1,
     borderRadius: 20,
-    marginTop: 30,
     overflow:'hidden',
     paddingBottom:30,
     shadowColor: '#000',
